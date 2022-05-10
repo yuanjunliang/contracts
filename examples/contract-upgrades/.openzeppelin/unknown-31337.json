@@ -1,0 +1,54 @@
+{
+  "manifestVersion": "3.2",
+  "admin": {
+    "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+    "txHash": "0xec1c5dab244db5849ee066308a3b072f1bc773274f5d968a1c9fcd69f3e85f98"
+  },
+  "proxies": [
+    {
+      "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+      "txHash": "0x05cead25ebda08e2443b14c4c1a46b6e65e9dfa820c8f3ba6ca435b8823b3978",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "9326b975eaa53ca1821b045699b2142117cffd9cb5756e6418aa99ddd18446cb": {
+      "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "txHash": "0xff91d3499c5afcaa414772ef372f81755e9dc7575bc0b817d43b0fadaf16d33f",
+      "layout": {
+        "storage": [
+          {
+            "label": "list",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_array(t_string_storage)dyn_storage",
+            "contract": "TodoList",
+            "src": "contracts/TodoList.sol:5"
+          },
+          {
+            "label": "admin",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address",
+            "contract": "TodoList",
+            "src": "contracts/TodoList.sol:6"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_string_storage)dyn_storage": {
+            "label": "string[]",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          }
+        }
+      }
+    }
+  }
+}

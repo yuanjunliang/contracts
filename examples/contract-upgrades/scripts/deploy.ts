@@ -3,23 +3,23 @@
 //
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
-import { ethers } from "hardhat";
+import { ethers, upgrades } from "hardhat";
 
 async function main() {
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
+  // 第一次部署合约
+  const signers = await ethers.getSigners();
+  const admin = signers[0];
+  const TodoList = await ethers.getContractFactory("TodoList");
+  const instance = await upgrades.deployProxy(TodoList, [admin.address]);
+  await instance.deployed();
+  console.log(`proxy deployed: ${instance.address}`);
 
-  // We get the contract to deploy
-  const Greeter = await ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, Hardhat!");
-
-  await greeter.deployed();
-
-  console.log("Greeter deployed to:", greeter.address);
+  // 部署升级版本的合约
+  // const TodoListV2 = await ethers.getContractFactory("TodoList");
+  // // 第一个参数是上一次部署的proxy 地址
+  // const upgraded = await upgrades.upgradeProxy(instance.address, TodoListV2);
+  // await upgraded.deployed();
+  // console.log(`upgraded success`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
