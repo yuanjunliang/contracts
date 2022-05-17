@@ -4,19 +4,21 @@ import { ethers } from "hardhat";
 
 import { ECDSASign } from "./helper/signature";
 
-const DEPLOYER_PRIVATE_KEY =
-  "ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+// admin signer private key
+const SIGNER_PRIVATE_KEY =
+  "59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d";
 
 describe("test ecdsa recover", function () {
   beforeEach(async function () {
     const accounts = await ethers.getSigners();
     this.deployer = accounts[0];
+    this.adminSigner = accounts[1];
+    this.alice = accounts[2];
 
     const ECDSAContract = await ethers.getContractFactory("ECDSAContract");
-    const ecdsa = await ECDSAContract.deploy();
-    await ecdsa.deployed();
-    this.ecdsa = ecdsa;
-    logger.info(`ecdsa deployed: ${ecdsa.address}`);
+    this.ecdsa = await ECDSAContract.deploy();
+    await this.ecdsa.deployed();
+    logger.info(`ecdsa deployed: ${this.ecdsa.address}`);
   });
 
   it("checkSignature", async function () {
@@ -28,16 +30,15 @@ describe("test ecdsa recover", function () {
     const types = ["uint256", "address", "uint256", "address"];
     const values = [
       signatureExpTimestamp,
-      this.deployer.address,
+      this.alice.address,
       roundId,
       contractAddress,
     ];
-    const signature = ECDSASign(types, values, DEPLOYER_PRIVATE_KEY);
-    const addr = await this.ecdsa.checkSignature(
-      signature,
-      signatureExpTimestamp,
-      roundId
-    );
-    expect(addr).to.eql(this.deployer.address);
+    const signature = ECDSASign(types, values, SIGNER_PRIVATE_KEY);
+    const addr = await this.ecdsa
+      .connect(this.alice)
+      .checkSignature(signature, signatureExpTimestamp, roundId);
+    // verifyed admin signer signed this message
+    expect(addr).to.eql(this.adminSigner.address);
   });
 });
