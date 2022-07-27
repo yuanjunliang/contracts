@@ -10,7 +10,11 @@ async function main() {
   const signers = await ethers.getSigners();
   const admin = signers[0];
   const TodoList = await ethers.getContractFactory("TodoList");
-  const instance = await upgrades.deployProxy(TodoList, [admin.address]);
+  // 可以部署的时候进行初始化传参
+  // const instance = await upgrades.deployProxy(TodoList, [admin.address]);
+  // 也可以先部署，然后调用初始化方法.这里要禁止插件自动调用初始化方法
+  const instance = await upgrades.deployProxy(TodoList, { initializer: false });
+  await instance.initialize(admin.address);
   await instance.deployed();
   console.log(`proxy deployed: ${instance.address}`);
 
